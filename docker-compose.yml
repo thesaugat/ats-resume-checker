@@ -1,0 +1,54 @@
+# version: "3.9"
+
+# services:
+#   backend:
+#     build: ./backend
+#     container_name: backend
+#     ports:
+#       - "8000:8000"
+#     volumes:
+#       - ./backend:/app
+#     environment:
+#       - PYTHONUNBUFFERED=1
+
+#   frontend:
+#     build: ./frontend
+#     container_name: frontend
+#     ports:
+#       - "3000:80"
+#     depends_on:
+#       - backend
+
+
+version: "3.9"
+
+services:
+  backend:
+    build:
+      context: ./backend
+      target: dev   # Use the development stage
+    container_name: backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+    environment:
+      - PYTHONUNBUFFERED=1
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+
+  frontend:
+    build:
+      context: ./frontend
+      target: dev   # Use the development stage
+    container_name: frontend
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules  # Avoid overwriting node_modules
+    environment:
+      - CHOKIDAR_USEPOLLING=true   # Fix for file watch in Docker
+    command: npm run dev -- --host
+    depends_on:
+      - backend
+
