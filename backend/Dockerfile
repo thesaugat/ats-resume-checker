@@ -30,7 +30,7 @@ COPY ./app ./app
 # Create all required directories with proper permissions
 RUN mkdir -p /app/vector_store && \
     mkdir -p /app/processed && \
-    chmod -R 777 /app/vector_store /app/uploads
+    chmod -R 777 /app/vector_store /app/processed 
 # Switch to non-root user
 USER app
 
