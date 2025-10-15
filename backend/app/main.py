@@ -9,17 +9,17 @@ from contextlib import asynccontextmanager
 app = FastAPI(title="My Microservices Backend")
 
 # Define allowed origins for CORS (e.g., allow frontend from localhost)
-origins = [
-    "http://3.27.34.4/",  # Replace with actual domain when published
-    "http://localhost:5173",
-    "http://localhost",  # Allow localhost in general
-    "http://3.27.34.4",
+allow_origins = [
+    "http://3.27.34.4",  # Your EC2 public IP
+    "http://localhost:5173",  # Local development
+    "http://localhost",  # Production frontend
+    "*",  # Allow all (for testing)
 ]
 
 # Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,  # Can be ["*"] to allow all origins (not recommended for production)
+    allow_origins=allow_origins,  # Can be ["*"] to allow all origins (not recommended for production)
     allow_credentials=True,
     allow_methods=["*"],  # Allow all HTTP methods (GET, POST, etc.)
     allow_headers=["*"],  # Allow all headers (including Content-Type)
