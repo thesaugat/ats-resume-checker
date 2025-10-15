@@ -5,6 +5,7 @@ import JobInput from './components/JobInput'
 import LoaderButton from './components/LoaderButton'
 import { CheckCircle2, Loader2 } from 'lucide-react'
 import LandingInfoCard from "./components/LandingInfo"
+import { API_BASE_URL } from '../../config';
 
 interface UploadPageProps {
     onAnalysisComplete: (data: any) => void;
@@ -106,7 +107,7 @@ function UploadPage({ onAnalysisComplete, onNavigate }: UploadPageProps) {
                 formData.append('is_job_desc_link', 'false')
             }
 
-            const response = await fetch('http://3.27.34.4:8000/upload', {
+            const response = await fetch('/api/upload', {
                 method: 'POST',
                 body: formData
             })
