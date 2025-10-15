@@ -4,85 +4,109 @@ import { ResponseData } from './data';
 export const myDummyData: ResponseData = {
     resume: {
         name: "Saugat Timilsina",
-        title: "Full Stack Engineer | Data Analytics and Engineering",
+        title: "Data Engineer | Cloud & Analytics Specialist",
         experience: "6+ years",
         location: "Wollongong, NSW, Australia",
-        summary: "Software Engineer with 6+ years of experience as a Senior Mobile and Full Stack Developer, now transitioning into Data Engineering and Machine Learning after completing a master's in computer science (Big Data & ML). Skilled in Mobile Dev, Python, and SQL, ETL, ELT and Generative AI with expertise across Android, cross-platform apps, databases, and CRM systems.",
-        skills: ["Data Analytics", "ETL/ELT pipelines", "Python", "SQL", "Java", "Kotlin", "Dart", "JavaScript", "Machine Learning", "MongoDB", "PostgreSQL", "AWS"],
+        summary:
+            "Results-driven Data Engineer with 6+ years of experience in data pipelines, analytics, and full-stack software development. Passionate about transforming raw data into reliable, high-impact insights. Experienced in building scalable ETL/ELT pipelines, automating workflows, and implementing cloud-native data solutions. Strong background in Python, SQL, and AWS with hands-on experience in Big Data, API integrations, and ML model deployment.",
+        skills: [
+            "Data Engineering",
+            "ETL/ELT Pipelines",
+            "Python",
+            "SQL",
+            "Apache Airflow",
+            "AWS (Lambda, S3, Redshift)",
+            "Docker",
+            "Data Warehousing",
+            "Power BI",
+            "Machine Learning",
+            "Pandas",
+            "PostgreSQL",
+            "GitHub Actions"
+        ],
         work_experience: [
             {
-                company: "PU Assist, Hamro Calendar",
-                position: "Founder & Developer",
-                duration: "8 years",
+                company: "Virtual Technology PVT LTD",
+                position: "Data Engineer / Full Stack Developer",
+                duration: "5 years 10 months",
                 key_responsibilities: [
-                    "Built and published cross-platform apps in Flutter with 30K+ daily users.",
-                    "Integrated Firebase Realtime DB, Analytics, Crashlytics, and REST APIs for real-time data sync and reporting.",
-                    "Managed full app lifecycle: backend integration, CI/CD (GitHub Actions), Dockerised services, and Play/App Store publishing.",
-                    "Designed and deployed an automated ETL pipeline using web scraping, APIs, and PDF parsing."
+                    "Built and maintained automated ETL pipelines integrating government data APIs and cloud data lakes.",
+                    "Transformed raw JSON and CSV datasets into structured PostgreSQL and Redshift tables for analytics dashboards.",
+                    "Designed RESTful APIs and backend microservices to streamline data access for BI teams.",
+                    "Collaborated with analysts to improve data validation and reporting efficiency, reducing manual errors by 40%."
                 ],
-                technologies_used: ["Flutter", "Firebase", "REST APIs", "Docker", "GitHub Actions"]
+                technologies_used: ["Python", "PostgreSQL", "Airflow", "AWS Lambda", "APIs", "Docker"]
             },
             {
-                company: "Virtual Technology PVT LTD",
-                position: "Mobile App and Full Stack Developer",
-                duration: "5 years 9 months",
+                company: "PU Assist (Side Project)",
+                position: "Founder & Data Platform Engineer",
+                duration: "8 years",
                 key_responsibilities: [
-                    "Managed data extraction and transformation from government APIs into secure databases.",
-                    "Designed automated workflows to maintain data consistency and reduce manual reporting errors.",
-                    "Partnered with teams to define data sets and prepare reports that supported business intelligence initiatives.",
-                    "Contributed to a COVID-19 contact tracing app."
+                    "Designed data pipelines to process 10K+ daily app usage logs for analytics and performance monitoring.",
+                    "Integrated Firebase, REST APIs, and Google Cloud Functions for data collection and transformation.",
+                    "Deployed CI/CD pipelines using Docker and GitHub Actions for seamless app and data service updates.",
+                    "Developed internal analytics dashboards for monitoring user retention and engagement trends."
                 ],
-                technologies_used: ["APIs", "GIS", "Google Play", "App Store"]
+                technologies_used: ["Python", "Firebase", "Google Cloud", "Docker", "GitHub Actions"]
             },
             {
                 company: "Star Phones PTY LTD",
-                position: "Hardware / Customer Support",
+                position: "Data and IT Support Assistant",
                 duration: "Part-time",
                 key_responsibilities: [
-                    "Prepared data and inventory reports, performing validation and reconciliation.",
-                    "Provided support for O365, networking, and POS systems.",
-                    "Supported internal systems monitoring."
+                    "Prepared weekly business reports by cleansing and reconciling sales and inventory data.",
+                    "Automated data validation scripts in Excel and Python to streamline reporting workflows.",
+                    "Supported networking, POS, and cloud backup systems for data reliability."
                 ],
-                technologies_used: ["O365"]
+                technologies_used: ["Excel", "Python", "O365"]
             },
             {
                 company: "Pokhara Engineering College",
                 position: "Part-time Lecturer",
                 duration: "2 years 8 months",
                 key_responsibilities: [
-                    "Taught Android and Flutter development with backend integration.",
-                    "Mentored students on applying SQL, Python, and Firebase."
+                    "Taught Python, SQL, and data visualization fundamentals to computer engineering students.",
+                    "Mentored final-year projects integrating APIs, analytics, and backend development."
                 ],
-                technologies_used: ["Android", "Flutter", "SQL", "Python", "Firebase"]
+                technologies_used: ["Python", "SQL", "Firebase"]
             },
             {
                 company: "Metashrine Pvt Ltd",
-                position: "Junior Android Developer",
+                position: "Junior Software Developer",
                 duration: "1 year 3 months",
                 key_responsibilities: [
-                    "Developed a restaurant menu & booking system with Java and MVC architecture.",
-                    "Integrated RESTful APIs for real-time bookings."
+                    "Developed REST APIs for restaurant management systems with Java MVC.",
+                    "Integrated data synchronization between client and server modules."
                 ],
-                technologies_used: ["Java", "MVC"]
+                technologies_used: ["Java", "MVC", "MySQL"]
             }
         ],
         projects: [
             {
-                project_name: "RAG-based AI Chatbot",
-                description: "Currently developing a portfolio website chatbot that integrates full-stack development, ETL pipelines, vector databases, and LLMs.",
-                technologies_used: ["ETL", "LLMs"],
-                role_or_contribution: "Developer"
+                project_name: "DataOps Pipeline Automation",
+                description:
+                    "Developed an automated ETL system to ingest and transform CSV and JSON datasets from multiple APIs into Redshift. Implemented Airflow DAGs for scheduling and monitoring.",
+                technologies_used: ["Airflow", "AWS", "Redshift", "Python"],
+                role_or_contribution: "Lead Engineer"
             },
             {
-                project_name: "iPaper",
-                description: "Capstone project focused on automated research paper summarisation and grouping.",
-                technologies_used: ["RAG", "LLM", "dashboards"],
+                project_name: "RAG-Based Research Assistant",
+                description:
+                    "Created an LLM-powered system integrating vector databases for document summarization and semantic retrieval, leveraging embeddings and LangChain pipelines.",
+                technologies_used: ["LangChain", "ChromaDB", "FastAPI", "ETL"],
+                role_or_contribution: "ML Engineer"
+            },
+            {
+                project_name: "PU Assist Analytics Dashboard",
+                description:
+                    "Built internal analytics dashboards using Power BI and Python scripts to visualize app growth, churn, and session data.",
+                technologies_used: ["Power BI", "Python", "Firebase", "ETL"],
                 role_or_contribution: "Developer"
             }
         ],
         education: [
             {
-                degree: "Master of Computer Science",
+                degree: "Master of Computer Science (Big Data & Machine Learning)",
                 institution: "University of Wollongong, Australia",
                 year_completed: "2025"
             },
@@ -92,141 +116,173 @@ export const myDummyData: ResponseData = {
                 year_completed: "2018"
             }
         ],
-        certifications: [],
-        achievements: ["Winner, Software Engineering Competition; Represented the college at Tech Expo."],
-        soft_skills: ["Stakeholder Engagement", "Mentoring", "Communication", "Collaboration", "Attention to detail"]
+        certifications: [
+            "AWS Certified Data Engineer – Associate (in progress)",
+            "Microsoft Power BI Analyst Certification"
+        ],
+        achievements: [
+            "Winner – Software Engineering Competition",
+            "Implemented first internal ETL automation system at Virtual Technology reducing reporting time by 50%"
+        ],
+        soft_skills: [
+            "Analytical Thinking",
+            "Problem Solving",
+            "Collaboration",
+            "Stakeholder Communication",
+            "Attention to Detail"
+        ]
     },
     job: {
-        title: "Graduate Data Analyst",
-        company: "Abacus Group",
+        title: "Graduate Data Engineer",
+        company: "ABZ Inc.",
         location: "Sydney, NSW",
         type: "Full-time",
-        postedDate: "2 weeks ago",
-        requiredSkills: ["Data Analytics", "Microsoft Excel", "Data Management", "Financial Reporting", "Data Cleansing", "Anaplan", "Communication Skills", "Collaboration", "Problem Solving", "Attention to Detail", "Agile Environment", "Forecasting"],
-        skillRelevance: [5, 5, 4, 5, 4, 3, 4, 4, 4, 3, 3, 4],
-        keyFocusAreas: ["Data Integrity", "Financial Data Management", "Collaboration with Teams", "Reporting and Analysis", "Data Import Processes", "Stakeholder Communication", "Business Intelligence", "Project Support", "Real Estate Sector Development"]
+        postedDate: "1 week ago",
+        requiredSkills: [
+            "Data Engineering",
+            "Python",
+            "SQL",
+            "ETL Pipelines",
+            "AWS Redshift",
+            "Airflow",
+            "Data Modelling",
+            "Power BI",
+            "Cloud Data Management",
+            "Problem Solving",
+            "Collaboration",
+            "Agile Environment"
+        ],
+        skillRelevance: [5, 5, 5, 5, 4, 4, 4, 3, 4, 4, 4, 3],
+        keyFocusAreas: [
+            "Data Pipeline Design",
+            "ETL/ELT Process Optimization",
+            "Cloud Integration (AWS)",
+            "Data Modelling and Warehousing",
+            "Cross-Team Collaboration",
+            "Data Quality and Governance",
+            "Real-time Data Streaming",
+            "Reporting and Analytics Automation"
+        ]
     },
     analysis: {
-        overallScore: 87,
-        atsScore: 92,
-        skillsMatched: 12,
-        skillsTotal: 14,
+        overallScore: 91,
+        atsScore: 94,
+        skillsMatched: 11,
+        skillsTotal: 12,
         experience_relevance: {
-            years_required: 5,
+            years_required: 3,
             years_candidate_has: 6,
-            relevance_explanation: "Candidate has more than the required years of experience in mobile development."
+            relevance_explanation:
+                "Candidate exceeds experience requirements with 6+ years of combined data engineering and software development background."
         },
-        keywordsFound: 35,
-        missingSkills: [
-            'React Native',
-            'Android Auto',
-            'Geospatial',
-            'Offline-first',
-            'Debugging',
-            'Clean Code',
-            'Application Lifecycle',
-            'Feature Implementation'
-        ],
-        missing_skills_priority: [1, 1, 1, 2, 2, 2, 3, 3],
+        keywordsFound: 40,
+        missingSkills: ["Terraform", "Snowflake"],
+        missing_skills_priority: [2, 3],
         matchedSkills: [
-            "Java", "Kotlin", "Flutter", "React", "Node.js", "REST APIs",
-            "Firebase", "Docker", "CI/CD", "SQL", "Agile", "Unit Testing"
+            "Python",
+            "SQL",
+            "AWS",
+            "Airflow",
+            "ETL",
+            "Power BI",
+            "Docker",
+            "Data Modelling",
+            "Agile",
+            "Problem Solving",
+            "Collaboration"
         ],
         recommendations: [
             {
-                type: 'critical',
-                title: 'Add Missing Critical Skills',
-                description: 'Include React Native, Android Auto, and Geospatial skills to align with job requirements.',
-                impact: 'High',
-                section: 'Skills',
-                original: 'Current skills listed',
-                suggested: 'React Native, Android Auto, Geospatial',
-                action: 'add'
+                type: "critical",
+                title: "Add Missing Tools",
+                description: "Include Terraform and Snowflake to align with enterprise-grade data engineering expectations.",
+                impact: "High",
+                section: "Skills",
+                suggested: "Terraform, Snowflake",
+                action: "add"
             },
             {
-                type: 'high',
-                title: 'Highlight Relevant Projects',
-                description: 'Add specific projects that demonstrate experience with offline-first applications and debugging.',
-                impact: 'Medium',
-                section: 'Projects',
-                original: 'No relevant projects listed',
-                suggested: 'Projects demonstrating offline-first and debugging experience',
-                action: 'add'
+                type: "high",
+                title: "Quantify Impact in Work Experience",
+                description:
+                    "Add data-driven achievements like ‘Reduced ETL runtime by 30%’ to make the resume results-oriented.",
+                impact: "Medium",
+                section: "Experience",
+                action: "modify"
             },
             {
-                type: 'medium',
-                title: 'Improve Experience Descriptions',
-                description: 'Use action verbs and quantify achievements to make your experience more impactful.',
-                impact: 'Medium',
-                section: 'Experience',
-                original: 'Worked on mobile applications',
-                suggested: 'Developed and launched 5+ mobile applications, increasing user engagement by 40%',
-                action: 'modify'
-            },
-            {
-                type: 'low',
-                title: 'Reorder Education Section',
-                description: 'Move your most recent and relevant degree to the top of the education section.',
-                impact: 'Low',
-                section: 'Education',
-                action: 'reorder'
+                type: "medium",
+                title: "Highlight Cloud Data Projects",
+                description: "Emphasize cloud integration and warehousing experience under projects section.",
+                impact: "Medium",
+                section: "Projects",
+                action: "add"
             }
         ],
         keyword_density: {
-            critical_keywords_present: ['Java', 'Kotlin', 'Mobile Development', 'Collaboration', 'Problem-solving'],
-            critical_keywords_missing: ['React Native', 'Android Auto', 'Geospatial', 'Offline-first', 'Debugging', 'Performance Optimization', 'Clean Code', 'Application Lifecycle']
+            critical_keywords_present: [
+                "Python",
+                "ETL",
+                "Data Pipeline",
+                "AWS",
+                "SQL"
+            ],
+            critical_keywords_missing: [
+                "Terraform",
+                "Snowflake",
+                "Data Lakehouse"
+            ]
         },
-        strengths: ['Strong experience in mobile development with Kotlin and Java.',
-            'Experience in mentoring and collaboration.',
-            'Diverse project experience including a COVID-19 contact tracing app.'],
-        redFlags: ['Lack of experience with React Native and other critical technologies mentioned in the job description.']
-
+        strengths: [
+            "Excellent understanding of ETL and data warehousing.",
+            "Strong Python and SQL background with automation expertise.",
+            "Experience in both backend and data infrastructure roles."
+        ],
+        redFlags: ["Limited experience with infrastructure-as-code (Terraform)."]
     },
-
-
     charts: {
         radial: [
-            { name: 'Match Score', value: 87 },
-            { name: 'ATS Score', value: 92 },
-            { name: 'Skills', value: 85 },
-            { name: 'Experience', value: 90 }
+            { name: "Match Score", value: 91 },
+            { name: "ATS Score", value: 94 },
+            { name: "Skills", value: 89 },
+            { name: "Experience", value: 95 }
         ],
         skillCategories: [
-            { category: 'Mobile', yours: 95, required: 95 },
-            { category: 'Frontend', yours: 88, required: 90 },
-            { category: 'Backend', yours: 85, required: 85 },
-            { category: 'Database', yours: 80, required: 85 },
-            { category: 'DevOps', yours: 70, required: 80 },
-            { category: 'Cloud', yours: 60, required: 75 },
-            { category: 'Testing', yours: 85, required: 80 }
+            { category: "Data Engineering", yours: 95, required: 90 },
+            { category: "Cloud", yours: 80, required: 85 },
+            { category: "ETL/ELT", yours: 92, required: 90 },
+            { category: "Database", yours: 88, required: 85 },
+            { category: "Analytics", yours: 85, required: 80 },
+            { category: "DevOps", yours: 75, required: 80 },
+            { category: "Testing", yours: 80, required: 75 }
         ],
         competency: [
-            { skill: 'Technical Skills', yours: 90, required: 90, fullMark: 100 },
-            { skill: 'Leadership', yours: 85, required: 80, fullMark: 100 },
-            { skill: 'Communication', yours: 80, required: 80, fullMark: 100 },
-            { skill: 'Problem Solving', yours: 88, required: 85, fullMark: 100 },
-            { skill: 'Team Work', yours: 92, required: 85, fullMark: 100 }
+            { skill: "Technical Skills", yours: 92, required: 90, fullMark: 100 },
+            { skill: "Leadership", yours: 85, required: 80, fullMark: 100 },
+            { skill: "Communication", yours: 83, required: 80, fullMark: 100 },
+            { skill: "Problem Solving", yours: 90, required: 85, fullMark: 100 },
+            { skill: "Team Work", yours: 94, required: 85, fullMark: 100 }
         ],
         matchProgress: [
-            { month: 'Current', score: 87 },
-            { month: 'With Missing Skills', score: 93 },
-            { month: 'With All Suggestions', score: 97 }
+            { month: "Current", score: 91 },
+            { month: "With Missing Skills", score: 95 },
+            { month: "With All Suggestions", score: 98 }
         ],
         keywords: [
-            { section: 'Summary', matched: 4, missing: 1 },
-            { section: 'Skills', matched: 12, missing: 2 },
-            { section: 'Experience', matched: 15, missing: 3 },
-            { section: 'Projects', matched: 5, missing: 1 },
-            { section: 'Education', matched: 3, missing: 0 }
+            { section: "Summary", matched: 5, missing: 0 },
+            { section: "Skills", matched: 11, missing: 2 },
+            { section: "Experience", matched: 17, missing: 1 },
+            { section: "Projects", matched: 6, missing: 1 },
+            { section: "Education", matched: 3, missing: 0 }
         ],
         atsCompatibility: [
-            { name: 'Passed', value: 92 },
-            { name: 'Failed', value: 8 }
+            { name: "Passed", value: 94 },
+            { name: "Failed", value: 6 }
         ],
         skillPriority: [
-            { name: 'Critical', value: 2, color: '#ef4444' },
-            { name: 'Important', value: 3, color: '#f97316' },
-            { name: 'Nice to Have', value: 2, color: '#3b82f6' }
+            { name: "Critical", value: 3, color: "#ef4444" },
+            { name: "Important", value: 4, color: "#f97316" },
+            { name: "Nice to Have", value: 2, color: "#3b82f6" }
         ]
     }
 };

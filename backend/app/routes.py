@@ -44,7 +44,7 @@ def process_resume_job(processed_data):
     rag = RAGAnalyzerFull(
         resume_text=processed_data["resume_text"],
         job_desc=processed_data["job_desc"],
-        vectorstore_path="backend/app/vectorstore",
+        vectorstore_path="./vector_store",
         openai_api_key=OPENAI_API_KEY,
     )
     extracted = rag.extract_all_details()

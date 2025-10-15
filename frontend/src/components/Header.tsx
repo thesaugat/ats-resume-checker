@@ -16,8 +16,12 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
                         className="flex items-center space-x-3 cursor-pointer hover:opacity-80 transition-opacity"
                         onClick={() => onNavigate('/upload')}
                     >
-                        <div className="bg-blue-600 p-2 rounded-lg">
-                            <Target className="w-6 h-6 text-white" />
+                        <div className="rounded-lg">
+                            <img
+                                src="/android-chrome-192x192.png"
+                                alt="Logo"
+                                className="w-10 h-10"
+                            />
                         </div>
                         <h1 className="text-2xl font-bold text-slate-900">JobScan MVP</h1>
                     </div>
@@ -25,8 +29,8 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
                         <button
                             onClick={() => onNavigate('/upload')}
                             className={`px-4 py-2 rounded-md text-sm font-medium transition-colors flex items-center gap-2 ${currentPath === '/upload'
-                                    ? 'bg-white text-blue-600 shadow-sm'
-                                    : 'text-slate-600 hover:text-slate-900'
+                                ? 'bg-white text-blue-600 shadow-sm'
+                                : 'text-slate-600 hover:text-slate-900'
                                 }`}
                         >
                             <Upload className="w-4 h-4" />
@@ -35,8 +39,8 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
                         <button
                             onClick={() => onNavigate('/jobscan')}
                             className={`px-4 py-2 rounded-md text-sm font-medium transition-colors flex items-center gap-2 ${currentPath === '/jobscan'
-                                    ? 'bg-white text-blue-600 shadow-sm'
-                                    : 'text-slate-600 hover:text-slate-900'
+                                ? 'bg-white text-blue-600 shadow-sm'
+                                : 'text-slate-600 hover:text-slate-900'
                                 }`}
                         >
                             <FileSearch className="w-4 h-4" />
@@ -45,8 +49,8 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
                         <button
                             onClick={() => onNavigate('/jobResume')}
                             className={`px-4 py-2 rounded-md text-sm font-medium transition-colors flex items-center gap-2 ${currentPath === '/jobResume'
-                                    ? 'bg-white text-blue-600 shadow-sm'
-                                    : 'text-slate-600 hover:text-slate-900'
+                                ? 'bg-white text-blue-600 shadow-sm'
+                                : 'text-slate-600 hover:text-slate-900'
                                 }`}
                         >
                             <FileText className="w-4 h-4" />
@@ -70,8 +74,8 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
                         <button
                             onClick={() => onNavigate('/upload')}
                             className={`flex-1 px-2 py-2 rounded-md text-xs font-medium transition-colors flex items-center justify-center gap-1.5 ${currentPath === '/upload'
-                                    ? 'bg-white text-blue-600 shadow-sm'
-                                    : 'text-slate-600 hover:text-slate-900'
+                                ? 'bg-white text-blue-600 shadow-sm'
+                                : 'text-slate-600 hover:text-slate-900'
                                 }`}
                         >
                             <Upload className="w-4 h-4" />
@@ -80,8 +84,8 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
                         <button
                             onClick={() => onNavigate('/jobscan')}
                             className={`flex-1 px-2 py-2 rounded-md text-xs font-medium transition-colors flex items-center justify-center gap-1.5 ${currentPath === '/jobscan'
-                                    ? 'bg-white text-blue-600 shadow-sm'
-                                    : 'text-slate-600 hover:text-slate-900'
+                                ? 'bg-white text-blue-600 shadow-sm'
+                                : 'text-slate-600 hover:text-slate-900'
                                 }`}
                         >
                             <FileSearch className="w-4 h-4" />
@@ -90,8 +94,8 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
                         <button
                             onClick={() => onNavigate('/jobResume')}
                             className={`flex-1 px-2 py-2 rounded-md text-xs font-medium transition-colors flex items-center justify-center gap-1.5 ${currentPath === '/jobResume'
-                                    ? 'bg-white text-blue-600 shadow-sm'
-                                    : 'text-slate-600 hover:text-slate-900'
+                                ? 'bg-white text-blue-600 shadow-sm'
+                                : 'text-slate-600 hover:text-slate-900'
                                 }`}
                         >
                             <FileText className="w-4 h-4" />

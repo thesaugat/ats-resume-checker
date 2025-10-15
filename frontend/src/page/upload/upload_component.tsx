@@ -4,6 +4,7 @@ import ResumeUploader from './components/ResumeUploader'
 import JobInput from './components/JobInput'
 import LoaderButton from './components/LoaderButton'
 import { CheckCircle2, Loader2 } from 'lucide-react'
+import LandingInfoCard from "./components/LandingInfo"
 
 interface UploadPageProps {
     onAnalysisComplete: (data: any) => void;
@@ -146,7 +147,9 @@ function UploadPage({ onAnalysisComplete, onNavigate }: UploadPageProps) {
         <>
             {!isAnalyzing ? (
                 <>
+
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
                         <ResumeUploader
                             resumeInput={resumeInput}
                             setResumeInput={setResumeInput}
@@ -161,6 +164,8 @@ function UploadPage({ onAnalysisComplete, onNavigate }: UploadPageProps) {
                             inputMethod={inputMethod}
                             setInputMethod={setInputMethod}
                         />
+
+
                     </div>
 
                     {error && (
@@ -177,7 +182,13 @@ function UploadPage({ onAnalysisComplete, onNavigate }: UploadPageProps) {
                         >
                             Analyze Resume
                         </LoaderButton>
+
                     </div>
+
+                    <div className="lg:col-span-2 pt-6">
+                        <LandingInfoCard />
+                    </div>
+
                 </>
             ) : (
                 <div className="max-w-2xl mx-auto mt-12">
@@ -212,7 +223,7 @@ function UploadPage({ onAnalysisComplete, onNavigate }: UploadPageProps) {
                                 )}
                                 <div className="flex-1">
                                     <p className={`font-medium ${completedStages.has('uploading') ? 'text-green-700' :
-                                            loadingState.stage === 'uploading' ? 'text-blue-700' : 'text-slate-400'
+                                        loadingState.stage === 'uploading' ? 'text-blue-700' : 'text-slate-400'
                                         }`}>
                                         Uploading files
                                     </p>
@@ -233,7 +244,7 @@ function UploadPage({ onAnalysisComplete, onNavigate }: UploadPageProps) {
                                 )}
                                 <div className="flex-1">
                                     <p className={`font-medium ${completedStages.has('resume') ? 'text-green-700' :
-                                            loadingState.stage === 'resume' ? 'text-blue-700' : 'text-slate-400'
+                                        loadingState.stage === 'resume' ? 'text-blue-700' : 'text-slate-400'
                                         }`}>
                                         Analyzing resume
                                     </p>
@@ -254,7 +265,7 @@ function UploadPage({ onAnalysisComplete, onNavigate }: UploadPageProps) {
                                 )}
                                 <div className="flex-1">
                                     <p className={`font-medium ${completedStages.has('job') ? 'text-green-700' :
-                                            loadingState.stage === 'job' ? 'text-blue-700' : 'text-slate-400'
+                                        loadingState.stage === 'job' ? 'text-blue-700' : 'text-slate-400'
                                         }`}>
                                         Analyzing job description
                                     </p>
@@ -275,7 +286,7 @@ function UploadPage({ onAnalysisComplete, onNavigate }: UploadPageProps) {
                                 )}
                                 <div className="flex-1">
                                     <p className={`font-medium ${completedStages.has('matching') ? 'text-green-700' :
-                                            loadingState.stage === 'matching' ? 'text-blue-700' : 'text-slate-400'
+                                        loadingState.stage === 'matching' ? 'text-blue-700' : 'text-slate-400'
                                         }`}>
                                         Matching skills & generating recommendations
                                     </p>
