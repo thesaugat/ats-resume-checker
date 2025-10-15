@@ -3,6 +3,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.routes import router
 from typing import Union
 import os
+from contextlib import asynccontextmanager
+
 
 app = FastAPI(title="My Microservices Backend")
 
@@ -30,6 +32,7 @@ async def startup():
 
     # # Setup MongoDB indexes
     # await setup_indexes()
+
     pass
 
 

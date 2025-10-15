@@ -109,12 +109,13 @@ function UploadPage({ onAnalysisComplete, onNavigate }: UploadPageProps) {
                 method: 'POST',
                 body: formData
             })
+            const data = await response.json()
 
             if (!response.ok) {
-                throw new Error(`API Error: ${response.status} ${response.statusText}`)
+                throw new Error(`API Error: ${response.status} ${data["detail"]}`)
             }
 
-            const data = await response.json()
+            // const data = await response.json()
             console.log(data)
 
             // Mark analysis as complete
@@ -136,8 +137,19 @@ function UploadPage({ onAnalysisComplete, onNavigate }: UploadPageProps) {
             analysisCompleteRef.current = true
             timeoutsRef.current.forEach(timeout => clearTimeout(timeout))
 
-            const errorMessage = err instanceof Error ? err.message : 'Failed to analyze resume. Please try again.'
+            let errorMessage = 'Failed to analyze resume. Please try again.'
+
+            if (err instanceof Error) {
+                errorMessage = err.message
+            }
+
+            // Check if error has a detail property (from API response)
+            if (err && typeof err === 'object' && 'detail' in err) {
+                errorMessage = (err as any).detail
+            }
+
             setError(errorMessage)
+
             console.error('Analysis error:', err)
             setIsAnalyzing(false)
         }
