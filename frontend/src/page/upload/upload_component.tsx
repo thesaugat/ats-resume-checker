@@ -106,7 +106,7 @@ function UploadPage({ onAnalysisComplete, onNavigate }: UploadPageProps) {
                 formData.append('is_job_desc_link', 'false')
             }
 
-            const response = await fetch('http://0.0.0.0:8000/upload', {
+            const response = await fetch('/upload', {
                 method: 'POST',
                 body: formData
             })
