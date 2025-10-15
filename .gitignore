@@ -1,3 +1,4 @@
 /vector_store
 .env.example
 .DS_Store
+.env
