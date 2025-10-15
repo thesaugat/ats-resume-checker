@@ -105,7 +105,11 @@ class RAGAnalyzerFull:
                 unique_chunks.append(doc)
                 final_ids.append(id)
 
-        persist_dir = "./vector_store"
+        # Use absolute path
+        persist_dir = "/app/vector_store"  # Changed from "./vector_store"
+
+        # Ensure directory exists
+        os.makedirs(persist_dir, exist_ok=True)
 
         # Create persistent client
         chroma_client = chromadb.PersistentClient(path=persist_dir)
