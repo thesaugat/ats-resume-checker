@@ -28,6 +28,7 @@ const loadingStages: Record<LoadingStage, LoadingState> = {
 }
 
 function UploadPage({ onAnalysisComplete, onNavigate }: UploadPageProps) {
+
     const [resumeInput, setResumeInput] = useState('')
     const [resumeFile, setResumeFile] = useState<File | null>(null)
     const [jobInput, setJobInput] = useState('')
