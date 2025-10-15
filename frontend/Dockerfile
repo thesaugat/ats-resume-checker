@@ -16,9 +16,9 @@ CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
 FROM node:20-alpine AS build
 WORKDIR /app
 
-# Copy package files and install dependencies
+# Copy package files and install ALL dependencies (including devDependencies for build)
 COPY package*.json ./
-RUN npm ci --only=production
+RUN npm ci
 
 # Copy application code and build
 COPY . .
