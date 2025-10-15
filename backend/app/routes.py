@@ -12,8 +12,9 @@ from .storage.file_storage import save_analysis, get_total_scans
 
 from dotenv import load_dotenv
 
-router = APIRouter(prefix="")
+
 load_dotenv()
+router = APIRouter(prefix="")
 
 
 def get_client_ip(request: Request) -> str:
