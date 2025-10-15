@@ -100,3 +100,25 @@ Jobscan MVP uses an AI-driven retrieval layer for meaningful comparison:
 ```bash
 git clone https://github.com/thesaugat/ats-resume-checker.git
 cd ats-resume-checker
+
+```
+
+### 2️⃣ Set environment variable for backend
+Create a .env file inside the backend/ folder with your OpenAI API key:
+```python
+OPENAI_API_KEY=your_openai_api_key_here
+```
+### 3️⃣ Start services using Docker Compose
+```bash
+docker-compose up --build
+```
+This will:
+Build and run the backend (FastAPI + RAG services) on http://localhost:800
+Build and run the frontend (React + Tailwind) on http://localhost:5173
+
+### 4️⃣ Access the app
+
+Open frontend: http://localhost:5173
+
+API endpoints (if needed): http://localhost:8000/docs
+ (FastAPI Swagger UI)
