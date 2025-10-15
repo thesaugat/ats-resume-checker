@@ -3,6 +3,15 @@
 Jobscan MVP is an intelligent resume optimization tool designed to help job seekers **improve their ATS (Applicant Tracking System) match rate**.  
 By analyzing your resume against a job description, it provides **keyword insights**, **ATS-friendly optimization suggestions**, and **real-time scoring** to increase your chances of landing interviews.
 
+---
+
+## 🚀 Live Demo
+
+You can try the **pre-release demo** hosted on **AWS EC2** here:  
+👉 [http://3.27.34.4/upload](http://3.27.34.4/upload)
+
+---
+
 ![Analytics Page](./screenshots/analytics_page1.png) 
 
 ---
