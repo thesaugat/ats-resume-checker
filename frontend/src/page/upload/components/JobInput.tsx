@@ -19,21 +19,21 @@ export default function JobInput({
     setInputMethod,
 }: JobInputProps) {
     return (
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 flex flex-col h-full">
             <div className="flex items-center space-x-2 mb-4">
                 <BarChart3 className="w-5 h-5 text-green-600" />
                 <h2 className="text-lg font-semibold text-slate-900">Job Description</h2>
             </div>
 
-            <div className="space-y-4">
-                <div className="flex space-x-2 mb-3">
+            <div className="flex flex-col flex-1 space-y-4">
+                <div className="flex space-x-2">
                     {['paste', 'url'].map((method) => (
                         <button
                             key={method}
                             onClick={() => setInputMethod(method)}
                             className={`flex-1 py-2 px-3 rounded-lg text-sm font-medium transition-colors ${inputMethod === method
-                                    ? 'bg-green-50 text-green-600'
-                                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                                ? 'bg-green-50 text-green-600'
+                                : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                                 }`}
                         >
                             {method === 'url' ? (
@@ -48,26 +48,28 @@ export default function JobInput({
                 </div>
 
                 {inputMethod === 'url' && (
-                    <input
-                        type="url"
-                        value={jobUrl}
-                        onChange={(e) => setJobUrl(e.target.value)}
-                        placeholder="https://example.com/job-posting"
-                        className="w-full p-4 border border-slate-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm"
-                    />
+                    <div className="space-y-2">
+                        <input
+                            type="url"
+                            value={jobUrl}
+                            onChange={(e) => setJobUrl(e.target.value)}
+                            placeholder="https://example.com/job-posting"
+                            className="w-full p-4 border border-slate-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm"
+                        />
+                        <p className="text-xs text-slate-500">
+                            Job description will be fetched automatically if the site allows scraping. For best results, consider pasting the description directly.
+                        </p>
+                    </div>
                 )}
 
-                <textarea
-                    value={jobInput}
-                    onChange={(e) => setJobInput(e.target.value)}
-                    placeholder={
-                        inputMethod === 'url'
-                            ? 'Job description will be extracted automatically...'
-                            : 'Paste the job description here...'
-                    }
-                    disabled={inputMethod === 'url' && jobUrl !== ''}
-                    className="w-full h-48 p-4 border border-slate-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent resize-none text-sm disabled:bg-slate-50"
-                />
+                {inputMethod === 'paste' && (
+                    <textarea
+                        value={jobInput}
+                        onChange={(e) => setJobInput(e.target.value)}
+                        placeholder="Paste the job description here...&#10;&#10;💡 Tip: Direct paste is more reliable as not all websites allow automated scraping."
+                        className="w-full flex-1 p-4 border border-slate-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent resize-none text-sm"
+                    />
+                )}
             </div>
         </div>
     );

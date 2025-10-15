@@ -1,10 +1,16 @@
-import React from 'react';
-import { Briefcase, MapPin, Calendar, User, TrendingUp, FileText, CheckCircle, AlertCircle } from 'lucide-react';
+import React, { useState } from 'react';
+import { Briefcase, MapPin, Calendar, User, TrendingUp, Clock, CheckCircle, AlertCircle, Info } from 'lucide-react';
+
 
 // Combined Layout Component
 export default function JobInfoQuickStatsRow({ job, resume, analysis }) {
+    const [showExplanation, setShowExplanation] = useState(false);
+
     const atsRating = analysis.atsScore >= 80 ? 'Excellent' : analysis.atsScore >= 60 ? 'Good' : 'Fair';
     const atsColor = analysis.atsScore >= 80 ? 'text-green-600' : analysis.atsScore >= 60 ? 'text-blue-600' : 'text-orange-600';
+
+    const experienceRelevance = analysis.experience_relevance;
+    const meetsRequirement = experienceRelevance?.years_candidate_has >= experienceRelevance?.years_required;
 
     return (
         <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 mb-6">
@@ -43,6 +49,38 @@ export default function JobInfoQuickStatsRow({ job, resume, analysis }) {
                             <span className="truncate">Posted {job.postedDate}</span>
                         </div>
                     </div>
+
+                    {/* Experience Relevance Section */}
+                    {experienceRelevance && (
+                        <div className="relative flex items-center gap-3 text-sm bg-slate-50 border border-slate-200 rounded-lg p-3">
+                            <Clock className="w-4 h-4 text-slate-400 flex-shrink-0" />
+                            <div className="flex items-center gap-2 flex-1">
+                                <span className="text-slate-600">Experience:</span>
+                                <span className="font-semibold text-slate-900">{experienceRelevance.years_required}+ yrs required</span>
+                                <span className="text-slate-400">•</span>
+                                <span className={`font-semibold ${meetsRequirement ? 'text-green-600' : 'text-orange-600'}`}>
+                                    {experienceRelevance.years_candidate_has} yrs
+                                </span>
+                                {meetsRequirement ? (
+                                    <CheckCircle className="w-4 h-4 text-green-600" />
+                                ) : (
+                                    <AlertCircle className="w-4 h-4 text-orange-600" />
+                                )}
+                            </div>
+                            <button
+                                onClick={() => setShowExplanation(!showExplanation)}
+                                className="p-1 hover:bg-slate-200 rounded-full transition-colors flex-shrink-0"
+                                title={showExplanation ? "Hide details" : "Show details"}
+                            >
+                                <Info className={`w-4 h-4 ${showExplanation ? 'text-blue-600' : 'text-slate-400'}`} />
+                            </button>
+                            {showExplanation && (
+                                <div className="absolute top-full mt-2 right-0 w-80 bg-white border border-slate-200 rounded-lg shadow-lg p-3 text-xs text-slate-600 z-10">
+                                    {experienceRelevance.relevance_explanation}
+                                </div>
+                            )}
+                        </div>
+                    )}
                 </div>
 
                 {/* Right: Quick Stats - Takes 1/3 width on large screens */}

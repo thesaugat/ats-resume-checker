@@ -1,34 +1,78 @@
 // data/data.ts
 export type Recommendation = {
-    type: "critical" | "important" | "moderate" | "info";
+    type: "critical" | "high" | "medium" | "low";
     title: string;
     description: string;
     impact: "High" | "Medium" | "Low";
+    section: string;
+    original?: string;
+    suggested?: string;
+    action: "add" | "modify" | "remove" | "reorder";
 };
+
+export type KeyWordDensity = {
+    critical_keywords_present: string[];
+    critical_keywords_missing: string[];
+}
+export type ExperienceRelevence = {
+    years_required: number,
+    years_candidate_has: number,
+    relevance_explanation: string
+
+}
+
 
 export type Analysis = {
     overallScore: number;
     atsScore: number;
     skillsMatched: number;
     skillsTotal: number;
+    experience_relevance: ExperienceRelevence;
     keywordsFound: number;
     missingSkills: string[];
+    missing_skills_priority: number[];
     matchedSkills: string[];
+    keyword_density: KeyWordDensity;
+    strengths: string[];
+    redFlags: string[];
     recommendations: Recommendation[];
-    suggestions: {
-        section: string;
-        original: string;
-        suggested: string;
-        action: "add" | "enhance";
-    }[];
+
 };
+export type WorkExperience = {
+    company: string;
+    position: string;
+    duration: string;
+    key_responsibilities: string[];
+    technologies_used: string[];
+}
+
+export type Projects = {
+    project_name: string;
+    description: string;
+    technologies_used: string[];
+    role_or_contribution: string;
+
+}
+export type Education = {
+    degree: string;
+    institution: string;
+    year_completed: string;
+}
 
 export type Resume = {
     name: string;
     title: string;
     experience: string;
     location: string;
+    summary: string;
     skills: string[];
+    work_experience: WorkExperience[];
+    projects: Projects[];
+    education: Education[];
+    certifications: string[];
+    achievements: string[];
+    soft_skills: string[]
+
 };
 
 export type Job = {
@@ -38,10 +82,12 @@ export type Job = {
     type: string;
     postedDate: string;
     requiredSkills: string[];
+    skillRelevance: number[];
+    keyFocusAreas: string[];
 };
 
 export type ChartData = {
-    radial: { name: string; value: number; fill: string }[];
+    radial: { name: string; value: number }[];
     skillCategories: { category: string; yours: number; required: number }[];
     competency: { skill: string; yours: number; required: number; fullMark: number }[];
     matchProgress: { month: string; score: number }[];

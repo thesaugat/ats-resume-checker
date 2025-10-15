@@ -2,6 +2,7 @@ import React, { memo } from "react";
 import { ResponsiveContainer, PieChart, Pie, Cell, Tooltip } from "recharts";
 import { CheckCircle, AlertCircle, Shield, TrendingUp } from "lucide-react";
 
+const fillColors = ["#3b82f6", "#8b5cf6", "#10b981", "#f59e0b", "#f59e0b"]
 // ATS Tooltip
 const ATSTooltip = memo(({ active, payload }: any) => {
     if (!active || !payload || !payload.length) return null;
@@ -9,7 +10,7 @@ const ATSTooltip = memo(({ active, payload }: any) => {
     return (
         <div className="bg-white px-3 py-2 rounded-lg shadow-lg border border-slate-200">
             <p className="text-xs font-medium text-slate-700">{name}</p>
-            <p className="text-lg font-bold" style={{ color: cellPayload.fill }}>
+            <p className="text-lg font-bold" style={{ color: "#8b5cf6" }}>
                 {value}%
             </p>
         </div>
@@ -26,7 +27,7 @@ const PerformanceMetrics = memo(({ data }: any) => (
             >
                 <div
                     className="w-1.5 h-12 rounded-full flex-shrink-0"
-                    style={{ backgroundColor: metric.fill }}
+                    style={{ backgroundColor: fillColors[idx] }}
                 />
                 <div className="flex flex-col min-w-0">
                     <span className="text-xs text-slate-500 truncate">{metric.name}</span>
@@ -100,7 +101,7 @@ const ATSPerformanceDashboard = ({ atsCompatibility, radial }: any) => {
                                     endAngle={-270}
                                 >
                                     {atsCompatibility.map((entry: any, idx: number) => (
-                                        <Cell key={idx} fill={entry.fill} />
+                                        <Cell key={idx} fill={fillColors[idx]} />
                                     ))}
                                 </Pie>
                                 <Tooltip content={<ATSTooltip />} />

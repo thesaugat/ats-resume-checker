@@ -1,11 +1,15 @@
 import uuid
 from typing import List, Dict, Any
 import re
-from langchain.vectorstores import Chroma
-from langchain.embeddings import OpenAIEmbeddings
+import os
+import shutil
+from langchain_community.vectorstores import Chroma
+from langchain_community.embeddings import OpenAIEmbeddings
 from langchain.chains import RetrievalQA
-from langchain.chat_models import ChatOpenAI
-from langchain.schema import Document
+from langchain_community.chat_models import ChatOpenAI
+from langchain_community.llms import OpenAI
+from langchain.schema import Document, AIMessage, HumanMessage, SystemMessage
+from langchain.prompts import ChatPromptTemplate
 import json
 
 
@@ -72,6 +76,11 @@ class RAGAnalyzerFull:
                 final_ids.append(id)
 
         persist_dir = f"{self.vectorstore_path}/{store_name}"
+
+        # ✅ Delete existing directory if it exists
+        if os.path.exists(persist_dir):
+            shutil.rmtree(persist_dir)
+
         vectorstore = Chroma.from_documents(
             documents=unique_chunks,
             ids=final_ids,
@@ -95,186 +104,7 @@ class RAGAnalyzerFull:
     # -------------------------------
     # Step 4: Extract structured details (separate for resume & job)
     # -------------------------------
-    def extract_resume_details(self) -> dict:
-        retriever = self.resume_vectorstore.as_retriever(
-            search_type="similarity", search_kwargs={"k": 5}
-        )
-
-        qa_chain = RetrievalQA.from_chain_type(
-            llm=self.llm, retriever=retriever, return_source_documents=True
-        )
-
-        prompt = (
-            "You are an expert resume parser. "
-            "Extract the following details from the retrieved resume chunks:\n"
-            "- name\n"
-            "- title\n"
-            "- total experience in years\n"
-            "- location\n"
-            "- skills: extract a maximum of 20 concise, keyword-level skills from the resume. "
-            "Each skill should be a single term or short phrase (e.g., 'Python', 'React', 'Docker', 'Flutter'). "
-            "Prioritize technical and domain-specific skills, but include important general skills if present.\n"
-            "- skills_category: a parallel list to 'skills', where each skill is assigned a category. "
-            "Use a maximum of 5 unique categories per resume. "
-            "Examples include 'Mobile', 'Frontend', 'Backend', 'Database', 'DevOps', 'Cloud', 'Testing'. "
-            "Adapt categories according to the candidate's profile and profession.\n\n"
-            "Return only valid JSON in the following format:\n"
-            "{\n"
-            "  'name': '',\n"
-            "  'title': '',\n"
-            "  'experience': '',\n"
-            "  'location': '',\n"
-            "  'skills': [],\n"
-            "  'skills_category': []\n"
-            "}"
-        )
-
-        result = qa_chain.run(prompt)
-        try:
-            return json.loads(result)
-        except json.JSONDecodeError:
-            return {
-                "name": "",
-                "title": "",
-                "experience": "",
-                "location": "",
-                "skills": [],
-            }
-
-    def extract_job_details(self) -> dict:
-        retriever = self.job_vectorstore.as_retriever(
-            search_type="similarity", search_kwargs={"k": 5}
-        )
-
-        qa_chain = RetrievalQA.from_chain_type(
-            llm=self.llm, retriever=retriever, return_source_documents=True
-        )
-
-        prompt = (
-            "You are an HR assistant that analyses job description text and structures it into clean, machine-readable JSON.\n"
-            "From the retrieved job description chunks, extract the following details:\n"
-            "- title\n"
-            "- company\n"
-            "- location\n"
-            "- employment type (Full-time, Part-time, Contract, Internship, or Freelance)\n"
-            "- posted date (if mentioned)\n"
-            "- requiredSkills: extract about 15 only concise, keyword-level skills such as 'Python', 'React', 'Snow Flake', which are very essential for this job, not full phrases or sentences and try to prioritise technological terminology like 'docker', 'aws', but include other common skills too.\n"
-            "- skillRelevance: a parallel list where each value corresponds to the relevance or importance (1–5) of the skill at the same index in 'requiredSkills'. "
-            "Use 5 for critical/core skills frequently mentioned, 3 for moderately important, and 1 for nice-to-have or optional.\n"
-            "- keyFocusAreas: identify 5-10 core themes or focus areas that summarize the main goals or specializations of this job "
-            "(e.g., 'Frontend Development', 'Cloud Infrastructure', 'Data Engineering', 'Team Leadership').\n\n"
-            "Return only valid JSON in the following format:\n"
-            "{\n"
-            "  'title': '',\n"
-            "  'company': '',\n"
-            "  'location': '',\n"
-            "  'type': '',\n"
-            "  'postedDate': '',\n"
-            "  'requiredSkills': [],\n"
-            "  'skillRelevance': [],\n"
-            "  'keyFocusAreas': []\n"
-            "}\n"
-        )
-        result = qa_chain.invoke({"query": prompt})
-        try:
-            return json.loads(result)
-        except json.JSONDecodeError:
-            return {
-                "title": "",
-                "company": "",
-                "location": "",
-                "type": "",
-                "postedDate": "",
-                "requiredSkills": [],
-            }
-
-    def analyze_match(self, resume_result, job_result):
-        resume_skills = {
-            s.lower().replace("(", "").replace(")", "").strip()
-            for s in resume_result["skills"]
-        }
-        job_skills = [s.lower().strip() for s in job_result["requiredSkills"]]
-        relevance = job_result["skillRelevance"]
-
-        matched = []
-        missing = []
-        weighted_score = 0
-        total_weight = 0
-
-        for skill, weight in zip(job_skills, relevance):
-            total_weight += weight
-            if skill in resume_skills:
-                matched.append(skill)
-                weighted_score += weight
-            else:
-                missing.append(skill)
-
-        match_percentage = (
-            (weighted_score / total_weight) * 100 if total_weight > 0 else 0
-        )
-
-        return {
-            "matchedSkills": matched,
-            "missingSkills": missing,
-            "weightedMatchScore": round(match_percentage, 2),
-        }
-
-    # -------------------------------
-    # Step 5: Analyze matched/missing skills
-    # -------------------------------
-    def analyze(self, resume_details: dict, job_details: dict) -> Dict[str, Any]:
-        prompt = f"""
-        Compare the resume and job description details and produce the following:
-        1. matchedSkills (list of strings)
-        2. missingSkills (list of strings)
-        3. 3-5 recommendations (type: 'critical'|'important'|'moderate'|'info', impact: 'High'|'Medium'|'Low', title, description)
-        4. 3-5 suggestions per section (Skills, Work Experience, Projects) with section, original, suggested, action (add/enhance)
-        Return as JSON with keys: matchedSkills, missingSkills, recommendations, suggestions.
-        Resume Details: {json.dumps(resume_details)}
-        Job Details: {json.dumps(job_details)}
-        """
-
-        result = self.llm.predict(prompt)
-        try:
-            return json.loads(result)
-        except json.JSONDecodeError:
-            return {
-                "matchedSkills": [],
-                "missingSkills": [],
-                "recommendations": [],
-                "suggestions": [],
-            }
-
-    # -------------------------------
-    # Step 6: Generate final JSON
-    # -------------------------------
-    def generate_final_json(self) -> dict:
-        # Create separate vectorstores
-        self._create_all_vectorstores()
-
-        # Extract structured details
-        resume_details = self.extract_resume_details()
-        job_details = self.extract_job_details()
-
-        # Analyze
-        analysis = self.analyze(resume_details, job_details)
-
-        # Combine into final output
-        return {
-            "resume": resume_details,
-            "job": job_details,
-            "analysis": analysis,
-            "charts": {},  # placeholder for visual insights
-        }
-
-
-class ResumeJobExtractor:
-    def __init__(self, llm, resume_vectorstore, job_vectorstore):
-        self.llm = llm
-        self.resume_vectorstore = resume_vectorstore
-        self.job_vectorstore = job_vectorstore
-
-    def extract_resume_details(self) -> dict:
+    def extract_resume_details(self):
         """Extracts structured information from the resume."""
         retriever = self.resume_vectorstore.as_retriever(
             search_type="similarity", search_kwargs={"k": 5}
@@ -285,33 +115,55 @@ class ResumeJobExtractor:
         )
 
         prompt = (
-            "You are an expert resume parser. "
-            "Extract the following details from the retrieved resume chunks:\n"
-            "name, title, total experience in years, location, and skills (list of strings).\n"
-            "Return only JSON in this format:\n"
+            "You are an expert resume parser and career coach. "
+            "Extract structured, machine-readable data from the retrieved resume chunks.\n\n"
+            "Your goal is to identify all important sections and extract detailed information for later comparison with job descriptions.\n"
+            "Extract the following fields:\n"
+            "- name\n"
+            "- title\n"
+            "- total experience in years\n"
+            "- location\n"
+            "- summary: a 3-4 sentence summary or professional headline if available.\n"
+            "- skills: list up to 12 concise, keyword-level items highlighting core technologies, tools, or professional strengths.\n"
+            "- work_experience: a list of roles, each with\n"
+            "   * company\n"
+            "   * position\n"
+            "   * duration (in months or years)\n"
+            "   * key_responsibilities (list of 3–6 bullet points)\n"
+            "   * technologies_used (list of key tools or frameworks)\n"
+            "- projects: a list of notable projects with\n"
+            "   * project_name\n"
+            "   * description\n"
+            "   * technologies_used\n"
+            "   * role or contribution\n"
+            "- education: a list of degrees or certifications with\n"
+            "   * degree\n"
+            "   * institution\n"
+            "   * year_completed\n"
+            "- certifications: a list of certifications or courses (e.g., 'AWS Certified Developer', 'Google Data Analytics').\n"
+            "- achievements: optional — any key accomplishments or awards.\n"
+            "- soft_skills: a list of interpersonal or general skills (e.g., 'Leadership', 'Collaboration', 'Problem Solving').\n\n"
+            "Return only valid JSON in this format:\n"
             "{\n"
             "  'name': '',\n"
             "  'title': '',\n"
             "  'experience': '',\n"
             "  'location': '',\n"
-            "  'skills': []\n"
+            "  'summary': '',\n"
+            "  'skills': [],\n"
+            "  'work_experience': [],\n"
+            "  'projects': [],\n"
+            "  'education': [],\n"
+            "  'certifications': [],\n"
+            "  'achievements': [],\n"
+            "  'soft_skills': []\n"
             "}"
         )
 
         result = qa_chain.invoke({"query": prompt})
-        try:
-            details = json.loads(result["result"])
-        except json.JSONDecodeError:
-            details = {
-                "name": "",
-                "title": "",
-                "experience": "",
-                "location": "",
-                "skills": [],
-            }
-        return details
+        return result
 
-    def extract_job_details(self) -> dict:
+    def extract_job_details(self):
         """Extracts structured information from the job description."""
         retriever = self.job_vectorstore.as_retriever(
             search_type="similarity", search_kwargs={"k": 5}
@@ -321,22 +173,6 @@ class ResumeJobExtractor:
             llm=self.llm, retriever=retriever, return_source_documents=True
         )
 
-        # prompt = (
-        #     "You are an HR assistant. "
-        #     "Extract the following details from the retrieved job description chunks:\n"
-        #     "title, company, location, employment type (Full-time, Part-time, Contract), "
-        #     "posted date, and required skills (list of strings).\n"
-        #     "Return only JSON in this format:\n"
-        #     "{\n"
-        #     "  'title': '',\n"
-        #     "  'company': '',\n"
-        #     "  'location': '',\n"
-        #     "  'type': '',\n"
-        #     "  'postedDate': '',\n"
-        #     "  'requiredSkills': []\n"
-        #     "}"
-        # )
-
         prompt = (
             "You are an HR assistant that analyses job description text and structures it into clean, machine-readable JSON.\n"
             "From the retrieved job description chunks, extract the following details:\n"
@@ -345,11 +181,9 @@ class ResumeJobExtractor:
             "- location\n"
             "- employment type (Full-time, Part-time, Contract, Internship, or Freelance)\n"
             "- posted date (if mentioned)\n"
-            "- requiredSkills: extract about 15 only concise, keyword-level skills such as 'Python', 'React', 'Snow Flake', which are very essential for this job, not full phrases or sentences and try to prioritise technological terminology like 'docker', 'aws', but include other common skills too.\n"
-            "- skillRelevance: a parallel list where each value corresponds to the relevance or importance (1–5) of the skill at the same index in 'requiredSkills'. "
-            "Use 5 for critical/core skills frequently mentioned, 3 for moderately important, and 1 for nice-to-have or optional.\n"
-            "- keyFocusAreas: identify 5-10 core themes or focus areas that summarize the main goals or specializations of this job "
-            "(e.g., 'Frontend Development', 'Cloud Infrastructure', 'Data Engineering', 'Team Leadership').\n\n"
+            "- requiredSkills: extract ~12 concise, keyword-level essential skills (technologies, tools, or core competencies) relevant to the job\n"
+            "- skillRelevance: assign 1–5 to each skill in 'requiredSkills' based on importance (5 = core, 3 = moderate, 1 = optional).\n"
+            "- keyFocusAreas: identify 5–10 core themes summarizing the job's main goals or specializations\n"
             "Return only valid JSON in the following format:\n"
             "{\n"
             "  'title': '',\n"
@@ -363,21 +197,12 @@ class ResumeJobExtractor:
             "}\n"
         )
         result = qa_chain.invoke({"query": prompt})
-        try:
-            details = json.loads(result["result"])
-        except json.JSONDecodeError:
-            details = {
-                "title": "",
-                "company": "",
-                "location": "",
-                "type": "",
-                "postedDate": "",
-                "requiredSkills": [],
-            }
-        return details
 
-    def extract_all_details(self) -> Dict[str, dict]:
+        return result
+
+    def extract_all_details(self):
         """Combines both resume and job extraction into a single dictionary."""
+        self._create_all_vectorstores()
         resume_details = self.extract_resume_details()
         job_details = self.extract_job_details()
 
@@ -387,114 +212,168 @@ class ResumeJobExtractor:
         }
 
 
-class MatchUtils:
-    @staticmethod
-    def analyze_match(resume_result, job_result):
+class ResumeAnalyzer:
+
+    def __init__(self, resume_json, job_json, llm):
+        self.resume_json = resume_json
+        self.job_json = job_json
+        self.llm = llm
+
+    def _analyze_resume_match_prompt(self, resume_json, job_json):
         """
-        Analyze skill overlap between resume and job description.
-        Returns matched skills, missing skills, and weighted match score (%).
+        Generates a prompt to analyze a resume against a job description,
+        returning structured metrics, competency analysis, keyword distribution,
+        and recommendations.
         """
-        resume_skills = {
-            s.lower().replace("(", "").replace(")", "").strip()
-            for s in resume_result.get("skills", [])
-        }
-        job_skills = [s.lower().strip() for s in job_result.get("requiredSkills", [])]
-        relevance = job_result.get("skillRelevance", [])
 
-        matched = []
-        missing = []
-        weighted_score = 0
-        total_weight = 0
+        prompt = f"""
+            You are an expert ATS (Applicant Tracking System) analyzer. Compare the following resume against the job description and provide a detailed analysis.
 
-        for skill, weight in zip(job_skills, relevance):
-            total_weight += weight
-            if skill in resume_skills:
-                matched.append(skill)
-                weighted_score += weight
-            else:
-                missing.append(skill)
+            RESUME DATA:
+            {json.dumps(resume_json, indent=2)}
 
-        match_percentage = (
-            (weighted_score / total_weight) * 100 if total_weight > 0 else 0
+            JOB DESCRIPTION DATA:
+            {json.dumps(job_json, indent=2)}
+
+            Analyze the resume against the job requirements and provide ONLY valid JSON using the following structure (exactly as shown):
+
+            {{
+            "performance_metrics": {{
+                "match_score": <0-100>,
+                "ats_score": <0-100>,
+                "skills_score": <0-100>,
+                "experience_score": <0-100>
+            }},
+            "competency": [
+                {{
+                "skill": "Five Dynamic skill based on job's industry standard to calculate competency analysis (e.g., Technical Skills, Leadership, Communication)",
+                "yours": <0-100>,
+                "required": <0-100>,
+              
+                }}
+            ],
+            "detailed_analysis": {{
+                "skills_matched": ["skill1", "skill2"], 
+                "skills_missing": ["skill1", "skill2"],
+                "missing_skills_priority": [1, 2],  # 1=High, 2=Medium, 3=Low
+                "experience_relevance": {{
+                "years_required": <number or "not specified">,
+                "years_candidate_has": <number>,
+                "relevance_explanation": "Brief explanation"
+                }},
+                "keyword_density": {{
+                "critical_keywords_present": ["keyword1", "keyword2"],
+                "critical_keywords_missing": ["keyword1", "keyword2"]
+                }},
+                "keywords": [
+                {{
+                    "section": "Summary",
+                    "matched": <number of keywords matched in this section>,
+                    "missing": <number of keywords missing in this section>
+                }},
+                {{
+                    "section": "Skills",
+                    "matched": <number>,
+                    "missing": <number>
+                }},
+                {{
+                    "section": "Experience",
+                    "matched": <number>,
+                    "missing": <number>
+                }},
+                {{
+                    "section": "Projects",
+                    "matched": <number>,
+                    "missing": <number>
+                }},
+                {{
+                    "section": "Education",
+                    "matched": <number>,
+                    "missing": <number>
+                }}
+                ]
+            }},
+            "recommendations": [
+                {{
+                "type": "critical|high|medium|low",
+                "title": "Clear actionable title",
+                "description": "Detailed explanation of what to do",
+                "impact": "High|Medium|Low",
+                "section": "Skills|Experience|Projects|Summary|Education",
+                "original": "Current content (if applicable)",
+                "suggested": "Recommended content (if applicable)",
+                "action": "add|modify|remove|reorder"
+                }}
+            ],
+            "strengths": [
+                "List of strong points in the resume"
+            ],
+            "red_flags": [
+                "Any concerns or issues"
+            ]
+            }}
+
+            SCORING GUIDELINES:
+            1. **Match Score (0-100)**: Overall compatibility between resume and job
+            - Consider skills overlap, semantic similarity of skills, experience relevance, and keyword presence
+            - Weight: 40% skills, 35% experience, 25% keywords
+
+            2. **ATS Score (0-100)**: Resume performance in automated systems
+            - Keyword density and placement
+            - Section organization and completeness
+            - Assume good formatting based on JSON structure
+
+            3. **Skills Score (0-100)**: Alignment of technical and soft skills
+            - Direct skill matches: +10 points each (max 70)
+            - Related/transferable skills or synonyms: +5 points each (max 20)
+            - Soft skills alignment: +10 points (max 10)
+
+            4. **Experience Score (0-100)**: Work experience relevance
+            - Years of experience match: 30 points
+            - Relevant job titles/roles: 30 points
+            - Project complexity and relevance: 25 points
+            - Industry/domain match: 15 points
+
+            RECOMMENDATION PRIORITIES:
+            - **Critical**: Missing must-have requirements that could lead to rejection
+            - **High**: Important optimizations that significantly improve match
+            - **Medium**: Good-to-have improvements
+            - **Low**: Minor tweaks for polish
+
+            Focus on:
+            1. Missing critical skills from requiredSkills with high skillRelevance (4-5)
+            2. Include missing_skills_priority for each missing skill
+            3. Keyword optimization per resume section (Summary, Skills, Experience, Projects, Education)
+            4. Experience gaps or misalignments
+            5. ATS-unfriendly elements
+            6. Quantifiable achievements or metrics that could be added
+
+            Always consider:
+            - Synonyms or related technologies when evaluating skills
+            - Transferable skills if domain differs
+            - Include all matching skills from the resume and job description, and rename them to match the job's wording.
+            - Dynamic competency categories based on job type
+            - Experience relevance even if job description is generic
+            - Include only content from the resume; do not include projects if they are explicitly listed as separate sections
+
+            Return ONLY valid JSON, with the exact structure above, and do not include any extra text.
+            """
+        return prompt
+
+    def analyze_resume(self):
+        system_message = (
+            "You are an expert ATS analyzer. Always respond with valid JSON only."
         )
+        user_message = self._analyze_resume_match_prompt(
+            resume_json=self.resume_json, job_json=self.job_json
+        )  # your variable containing the prompt
 
-        return {
-            "matchedSkills": matched,
-            "missingSkills": missing,
-            "weightedMatchScore": round(match_percentage, 2),
-        }
+        # Create LangChain messages
+        messages = [
+            SystemMessage(content=system_message),
+            HumanMessage(content=user_message),
+        ]
 
-    # ----------------- Experience Match -----------------
-    @staticmethod
-    def calculate_experience_score(resume_exp, job_title):
-        """
-        Calculates experience match percentage based on job level and resume experience.
-        """
-        try:
-            resume_exp = float(resume_exp)
-        except (ValueError, TypeError):
-            return 0
-
-        title = job_title.lower()
-        if "graduate" in title or "intern" in title:
-            expected = 0
-        elif "junior" in title or "associate" in title:
-            expected = 2
-        elif "senior" in title or "lead" in title:
-            expected = 6
-        else:
-            expected = 3  # Default mid-level
-
-        diff = abs(resume_exp - expected)
-        score = max(0, 100 - (diff * 15))  # 15 points off per year difference
-        return round(min(score, 100), 2)
-
-    # ----------------- ATS Score -----------------
-    @staticmethod
-    def calculate_ats_score(resume_result):
-        """
-        Simulates an ATS score based on completeness and skill diversity.
-        """
-        score = 0
-        total_checks = 3  # title, location, experience
-
-        if resume_result.get("title"):
-            score += 1
-        if resume_result.get("location"):
-            score += 1
-        if resume_result.get("experience"):
-            score += 1
-
-        # Bonus for skill diversity
-        unique_categories = len(set(resume_result.get("skills_category", [])))
-        diversity_score = min(unique_categories, 5) / 5  # 0–1
-        score += diversity_score
-
-        return round((score / (total_checks + 1)) * 100, 2)
-
-    # ----------------- Overall Summary -----------------
-    @staticmethod
-    def calculate_match_summary(resume_result, job_result):
-        """
-        Combines skill match, experience, and ATS scores into an overall match score.
-        """
-        skill_match_data = MatchUtils.analyze_match(resume_result, job_result)
-        skills_score = skill_match_data["weightedMatchScore"]
-        experience_score = MatchUtils.calculate_experience_score(
-            resume_result.get("experience", 0), job_result.get("title", "")
-        )
-        ats_score = MatchUtils.calculate_ats_score(resume_result)
-
-        # Weighted combination
-        overall_match = round(
-            (skills_score * 0.6) + (experience_score * 0.3) + (ats_score * 0.1), 2
-        )
-
-        return {
-            "skillsMatch": f"{skills_score}%",
-            "experienceMatch": f"{experience_score}%",
-            "atsScore": f"{ats_score}%",
-            "overallMatchScore": f"{overall_match}%",
-            "matchedSkills": skill_match_data["matchedSkills"],
-            "missingSkills": skill_match_data["missingSkills"],
-        }
+        # Run the LLM
+        response = self.llm.invoke(messages)
+        return response
