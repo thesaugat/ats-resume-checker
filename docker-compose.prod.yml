@@ -11,9 +11,10 @@ services:
       - "8000:8000"
     volumes:
       - ./vector_store:/app/vector_store
+    env_file:
+      - .env  
     environment:
       - PYTHONUNBUFFERED=1
-      - ENVIRONMENT=production
     networks:
       - app-network
 
