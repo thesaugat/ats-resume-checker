@@ -10,9 +10,10 @@ app = FastAPI(title="My Microservices Backend")
 
 # Define allowed origins for CORS (e.g., allow frontend from localhost)
 origins = [
-    "http://your-frontend-domain.com",  # Replace with actual domain when published
+    "http://3.27.34.4/",  # Replace with actual domain when published
     "http://localhost:5173",
     "http://localhost",  # Allow localhost in general
+    "http://3.27.34.4",
 ]
 
 # Add CORS middleware
