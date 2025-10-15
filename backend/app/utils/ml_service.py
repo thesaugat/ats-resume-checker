@@ -10,6 +10,9 @@ from langchain_community.chat_models import ChatOpenAI
 from langchain_community.llms import OpenAI
 from langchain.schema import Document, AIMessage, HumanMessage, SystemMessage
 from langchain.prompts import ChatPromptTemplate
+import chromadb
+from chromadb.config import Settings
+
 import json
 
 
@@ -63,6 +66,33 @@ class RAGAnalyzerFull:
     # -------------------------------
     # Step 3: Create separate vectorstores
     # -------------------------------
+    # def _create_vectorstore(self, chunks: List[Document], store_name: str):
+    #     ids = [str(uuid.uuid5(uuid.NAMESPACE_DNS, doc.page_content)) for doc in chunks]
+
+    #     unique_ids = set()
+    #     unique_chunks = []
+    #     final_ids = []
+    #     for doc, id in zip(chunks, ids):
+    #         if id not in unique_ids:
+    #             unique_ids.add(id)
+    #             unique_chunks.append(doc)
+    #             final_ids.append(id)
+
+    #     persist_dir = f"{self.vectorstore_path}/{store_name}"
+
+    #     # ✅ Delete existing directory if it exists
+    #     if os.path.exists(persist_dir):
+    #         shutil.rmtree(persist_dir)
+
+    #     vectorstore = Chroma.from_documents(
+    #         documents=unique_chunks,
+    #         ids=final_ids,
+    #         embedding=self.embeddings,
+    #         persist_directory=persist_dir,
+    #     )
+    #     vectorstore.persist()
+    #     return vectorstore
+
     def _create_vectorstore(self, chunks: List[Document], store_name: str):
         ids = [str(uuid.uuid5(uuid.NAMESPACE_DNS, doc.page_content)) for doc in chunks]
 
@@ -75,19 +105,26 @@ class RAGAnalyzerFull:
                 unique_chunks.append(doc)
                 final_ids.append(id)
 
-        persist_dir = f"{self.vectorstore_path}/{store_name}"
+        persist_dir = "./vector_store"
 
-        # ✅ Delete existing directory if it exists
-        if os.path.exists(persist_dir):
-            shutil.rmtree(persist_dir)
+        # Create persistent client
+        chroma_client = chromadb.PersistentClient(path=persist_dir)
 
+        # Try to delete existing collection if it exists
+        try:
+            chroma_client.delete_collection(name=store_name)
+        except Exception:
+            pass  # Collection doesn't exist, that's fine
+
+        # Create vectorstore
         vectorstore = Chroma.from_documents(
             documents=unique_chunks,
             ids=final_ids,
             embedding=self.embeddings,
-            persist_directory=persist_dir,
+            client=chroma_client,
+            collection_name=store_name,
         )
-        vectorstore.persist()
+
         return vectorstore
 
     def _create_all_vectorstores(self):
