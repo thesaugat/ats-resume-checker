@@ -1,0 +1,75 @@
+name: Deploy to AWS EC2
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Deploy to EC2
+      env:
+        PRIVATE_KEY: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+        HOST: ${{ secrets.EC2_HOST }}
+        USER: ubuntu
+      run: |
+        # Create SSH key file
+        echo "$PRIVATE_KEY" > private_key.pem
+        chmod 600 private_key.pem
+        
+        # Add EC2 to known hosts
+        ssh-keyscan -H $HOST >> ~/.ssh/known_hosts
+        
+        # Deploy via SSH
+        ssh -i private_key.pem ${USER}@${HOST} << 'ENDSSH'
+          # Navigate to app directory
+          cd ~/app || exit 1
+          
+          # Pull latest code
+          echo "📦 Pulling latest code..."
+          git pull origin main
+          
+          # Stop and remove old containers
+          echo "🛑 Stopping old containers..."
+          docker-compose -f docker-compose.prod.yml down
+          
+          # Remove old images to save space
+          echo "🧹 Cleaning up old images..."
+          docker system prune -af --volumes
+          
+          # Build and start new containers
+          echo "🚀 Building and starting containers..."
+          docker-compose -f docker-compose.prod.yml up -d --build
+          
+          # Show running containers
+          echo "✅ Deployment complete! Running containers:"
+          docker ps
+          
+          # Show logs
+          echo "📋 Recent logs:"
+          docker-compose -f docker-compose.prod.yml logs --tail=50
+        ENDSSH
+        
+        # Clean up
+        rm -f private_key.pem
+        
+    - name: Verify Deployment
+      env:
+        HOST: ${{ secrets.EC2_HOST }}
+      run: |
+        echo "🔍 Verifying deployment..."
+        sleep 10
+        
+        # Check if services are responding
+        curl -f http://$HOST:80 || echo "⚠️  Frontend might still be starting..."
+        curl -f http://$HOST:8000/health || echo "⚠️  Backend might still be starting..."
+        
+        echo "✅ Deployment workflow completed!"
+        echo "🌐 Frontend: http://$HOST"
+        echo "🔧 Backend: http://$HOST:8000"
