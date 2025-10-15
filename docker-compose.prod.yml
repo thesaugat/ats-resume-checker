@@ -11,7 +11,9 @@ services:
       - "8000:8000"
     volumes:
       - ./vector_store:/app/vector_store
+       - ./processed:/app/processed     
       - ./.env:/app/.env:ro     
+
     env_file:
       - .env  
     environment:

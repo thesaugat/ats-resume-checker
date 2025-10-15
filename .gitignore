@@ -2,3 +2,5 @@
 .env.example
 .DS_Store
 .env
+vector_store
+processed

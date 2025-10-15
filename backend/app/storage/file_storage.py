@@ -8,8 +8,8 @@ PROCESSED_FOLDER = "processed"
 
 
 def init_storage():
-    """Create processed folder if it doesn't exist"""
-    Path(PROCESSED_FOLDER).mkdir(exist_ok=True)
+    """Initialize storage directories"""
+    Path(PROCESSED_FOLDER).mkdir(parents=True, exist_ok=True)
 
 
 def save_analysis(response_json: dict, name: str = None, ip: str = None):

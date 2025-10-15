@@ -26,9 +26,11 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy application code
 COPY ./app ./app
 
-# Create directory for vector_store with proper permissions
-RUN mkdir -p /app/vector_store && chmod -R 777 /app/vector_store
 
+# Create all required directories with proper permissions
+RUN mkdir -p /app/vector_store && \
+    mkdir -p /app/processed && \
+    chmod -R 777 /app/vector_store /app/uploads
 # Switch to non-root user
 USER app
 
