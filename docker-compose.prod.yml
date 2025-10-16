@@ -7,15 +7,14 @@ services:
       target: prod
     container_name: backend
     restart: unless-stopped
+    user: "0:0"
     ports:
       - "8000:8000"
     volumes:
       - ./vector_store:/app/vector_store
-       - ./processed:/app/processed     
-      - ./.env:/app/.env:ro     
-
-    env_file:
-      - .env  
+      - ./processed:/app/processed
+      - ./uploads:/app/uploads
+      - ./.env:/app/.env:ro
     environment:
       - PYTHONUNBUFFERED=1
     networks:
@@ -29,11 +28,11 @@ services:
     restart: unless-stopped
     ports:
       - "80:80"
+      - "443:443"
+    volumes:
+      - /etc/letsencrypt:/etc/letsencrypt:ro    # ADD THIS LINE
     depends_on:
       - backend
-    volumes:
-      # Mount SSL certificates from host
-      - /etc/letsencrypt:/etc/letsencrypt:ro
     networks:
       - app-network
 
