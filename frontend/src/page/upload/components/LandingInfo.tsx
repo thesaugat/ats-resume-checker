@@ -33,7 +33,7 @@ const JobscanCard: React.FC = () => {
                     {/* Links Section */}
                     <div className="flex gap-4 mb-6">
                         <a
-                            href="https://github.com/yourusername/jobscan-mvp"
+                            href="https://github.com/thesaugat/ats-resume-checker"
                             target="_blank"
                             rel="noopener noreferrer"
                             className="flex items-center gap-2 px-4 py-2 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors text-sm"
@@ -43,7 +43,7 @@ const JobscanCard: React.FC = () => {
                         </a>
 
                         <a
-                            href="https://medium.com/@yourhandle/jobscan-mvp-article"
+                            href="https://medium.com/@thesaugat"
                             target="_blank"
                             rel="noopener noreferrer"
                             className="flex items-center gap-2 px-4 py-2 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors text-sm"
