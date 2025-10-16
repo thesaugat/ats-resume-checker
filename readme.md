@@ -8,7 +8,7 @@ By analyzing your resume against a job description, it provides **keyword insigh
 ## 🚀 Live Demo
 
 You can try the **pre-release demo** hosted on **AWS EC2** here:  
-👉 [http://3.27.34.4/upload](http://3.27.34.4/upload)
+👉 [Click Here](https://jobscan.duckdns.org/upload)
 
 ---
 
