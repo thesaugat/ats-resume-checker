@@ -31,6 +31,9 @@ services:
       - "80:80"
     depends_on:
       - backend
+    volumes:
+      # Mount SSL certificates from host
+      - /etc/letsencrypt:/etc/letsencrypt:ro
     networks:
       - app-network
 
