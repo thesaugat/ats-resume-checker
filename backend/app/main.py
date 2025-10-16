@@ -13,7 +13,8 @@ allow_origins = [
     "http://3.27.34.4",  # Your EC2 public IP
     "http://localhost:5173",  # Local development
     "http://localhost",  # Production frontend
-    "*",  # Allow all (for testing)
+    "https://jobscan.duckdns.org",
+    "http://jobscan.duckdns.org",
 ]
 
 # Add CORS middleware
